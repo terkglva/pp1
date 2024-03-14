@@ -34,9 +34,9 @@ from string import ascii_uppercase
 # file.close()
 
 # task 6
-# for char in ascii_uppercase:
-#     file = open(r'C:\week6\{fchar}.txt'.format(fchar = char), 'x')
-#     file.close()
+for char in ascii_uppercase:
+    with open(f'C:\\Users\\Владелец\\Desktop\\q\\lab6\\alhabet\\{char}.txt', 'w') as file:
+        file.write(f'this is {char}')
 
 # task 7
 # with open('demofile.txt', 'r') as file1, open('demofile3.txt', 'a') as file2:
