@@ -20,7 +20,7 @@ rectmin = minute.get_rect()
 rectmin.center = rectsec.center = midle
 
 background = pg.image.load("mainclock.png")
-run =True
+run = True
 
 angle1 = 0
 angle2 = 0

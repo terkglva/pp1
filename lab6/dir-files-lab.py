@@ -38,6 +38,7 @@ for char in ascii_uppercase:
     with open(f'C:\\Users\\Владелец\\Desktop\\q\\lab6\\alhabet\\{char}.txt', 'w') as file:
         file.write(f'this is {char}')
 
+
 # task 7
 # with open('demofile.txt', 'r') as file1, open('demofile3.txt', 'a') as file2:
 #     for line in file1:
