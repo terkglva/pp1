@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+import json
 
 snake_speed = 15
 
@@ -75,12 +76,35 @@ def show_score(choice, color, font, size):
     level_rect.topright = (window_x - 10, 10)
     game_window.blit(level_surface, level_rect)
 
+#добавление прогресса игрока
+
+def save_progress(score, level, snake_speed):
+    progress_data = {
+        'score': score,
+        'level': level,
+        'snake_speed': snake_speed
+    }
+    with open('progress.json', 'w') as file:
+        json.dump(progress_data, file)
+        
+def load_progress():
+    try:
+        with open('progress.json', 'r') as file:
+            progress_data = json.load(file)
+        return progress_data['score'], progress_data['level'], progress_data['snake_speed']
+    except FileNotFoundError:
+        # Если файл отсутствует (например, если игрок играет впервые), вернуть значения по умолчанию
+        return 0, 1, 15  # Начальные значения счета, уровня и скорости змеи
+
+# Загрузка прогресса перед запуском игры
+score, level, snake_speed = load_progress()
+        
 
 # функция завершения игры
 def game_over():
     # создание объекта шрифта my_font
     my_font = pygame.font.SysFont('times new roman', 50)
-
+    save_progress(score, level, snake_speed)
     # создание текстовой поверхности, на которой текст
     # будет нарисовано
     game_over_surface = my_font.render(
