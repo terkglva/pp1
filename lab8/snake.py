@@ -49,10 +49,12 @@ change_to = direction
 # начальная оценка
 score = 0
 
+fruit_eaten = 0
+level = 1
 fruit_time = 5
 
 # отображение функции Score
-def show_score(choice, color, font, size) :
+def show_score(choice, color, font, size):
     # создание объекта шрифта score_font
     score_font = pygame.font.SysFont(font, size)
 
@@ -67,9 +69,15 @@ def show_score(choice, color, font, size) :
     # отображение текста
     game_window.blit(score_surface, score_rect)
 
+    # отображение уровня
+    level_surface = score_font.render('Level : ' + str(level), True, color)
+    level_rect = level_surface.get_rect()
+    level_rect.topright = (window_x - 10, 10)
+    game_window.blit(level_surface, level_rect)
+
 
 # функция завершения игры
-def game_over() :
+def game_over():
     # создание объекта шрифта my_font
     my_font = pygame.font.SysFont('times new roman', 50)
 
@@ -100,77 +108,83 @@ def game_over() :
 
 
 # Main Function
-while True :
+while True:
 
     # обработка ключевых событий
-    for event in pygame.event.get() :
-        if event.type == pygame.KEYDOWN :
-            if event.key == pygame.K_UP :
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
                 change_to = 'UP'
-            if event.key == pygame.K_DOWN :
+            if event.key == pygame.K_DOWN:
                 change_to = 'DOWN'
-            if event.key == pygame.K_LEFT :
+            if event.key == pygame.K_LEFT:
                 change_to = 'LEFT'
-            if event.key == pygame.K_RIGHT :
+            if event.key == pygame.K_RIGHT:
                 change_to = 'RIGHT'
 
     # Если две клавиши нажаты одновременно
     # мы не хотим, чтобы змея разделялась на две
     # направлений одновременно
-    if change_to == 'UP' and direction != 'DOWN' :
+    if change_to == 'UP' and direction != 'DOWN':
         direction = 'UP'
-    if change_to == 'DOWN' and direction != 'UP' :
+    if change_to == 'DOWN' and direction != 'UP':
         direction = 'DOWN'
-    if change_to == 'LEFT' and direction != 'RIGHT' :
+    if change_to == 'LEFT' and direction != 'RIGHT':
         direction = 'LEFT'
-    if change_to == 'RIGHT' and direction != 'LEFT' :
+    if change_to == 'RIGHT' and direction != 'LEFT':
         direction = 'RIGHT'
 
     # Перемещение змеи
-    if direction == 'UP' :
+    if direction == 'UP':
         snake_position[1] -= 10
-    if direction == 'DOWN' :
+    if direction == 'DOWN':
         snake_position[1] += 10
-    if direction == 'LEFT' :
+    if direction == 'LEFT':
         snake_position[0] -= 10
-    if direction == 'RIGHT' :
+    if direction == 'RIGHT':
         snake_position[0] += 10
 
     # Механизм роста тела змеи
     # если фрукты и змеи сталкиваются, то очки
     # будет увеличено на 10
     snake_body.insert(0, list(snake_position))
-    if snake_position[0] == fruit_position[0] and snake_position[1] == fruit_position[1] :
+    if snake_position[0] == fruit_position[0] and snake_position[1] == fruit_position[1]:
         score += 10
+        fruit_eaten += 1
+        if fruit_eaten >= 5:
+            level += 1
+            snake_speed += 5  # увеличение скорости
+            fruit_eaten = 0
         fruit_spawn = False
-    else :
+    else:
         snake_body.pop()
 
-    if not fruit_spawn :
+    if not fruit_spawn:
         fruit_position = [random.randrange(1, (window_x // 10)) * 10,
                           random.randrange(1, (window_y // 10)) * 10]
 
     fruit_spawn = True
     game_window.fill(black)
 
-    for pos in snake_body :
+    for pos in snake_body:
         pygame.draw.rect(game_window, green,
                          pygame.Rect(pos[0], pos[1], 10, 10))
     pygame.draw.rect(game_window, white, pygame.Rect(
-        fruit_position[0], fruit_position[1], 10, 10))
+    fruit_position[0], fruit_position[1], 10, 10))
+
 
     # Game Over conditions
-    if snake_position[0] < 0 or snake_position[0] > window_x - 10 :
+    if snake_position[0] < 0 or snake_position[0] > window_x - 10:
         game_over()
-    if snake_position[1] < 0 or snake_position[1] > window_y - 10 :
+    if snake_position[1] < 0 or snake_position[1] > window_y - 10:
         game_over()
 
     # Touching the snake body
-    for block in snake_body[1 :] :
-        if snake_position[0] == block[0] and snake_position[1] == block[1] :
+    for block in snake_body[1:]:
+        if snake_position[0] == block[0] and snake_position[1] == block[1]:
             game_over()
 
-    # displaying score countinuously
+    # displaying score continuously
     show_score(1, white, 'times new roman', 20)
 
     # Refresh game screen
